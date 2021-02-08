@@ -23,9 +23,24 @@ const mystery3 = [6, 0, 1, 1, 3, 7, 7, 0, 2, 0, 9, 6, 2, 6, 5, 6, 2, 0, 3]
 const mystery4 = [4, 9, 2, 9, 8, 7, 7, 1, 6, 9, 2, 1, 7, 0, 9, 3]
 const mystery5 = [4, 9, 1, 3, 5, 4, 0, 4, 6, 3, 0, 7, 2, 5, 2, 3]
 
+// All invalid credit card numbers as strings
+const visaInvalid1 = '4716185274232905'
+const visaInvalid2 = '4929313115159474'
+const visaInvalid3 = '4485014291176714499'
+const discoverInvalid1 = '6011906930440492'
+const discoverInvalid2 = '6011640753393237'
+const discoverInvalid3 = '6011418536322138322'
+const stringBatch = [visaInvalid1, visaInvalid2, visaInvalid3, discoverInvalid1, discoverInvalid2, discoverInvalid3]
+
+
 // An array of all the arrays above
 const batch = [valid1, valid2, valid3, valid4, valid5, invalid1, invalid2, invalid3, invalid4, invalid5, mystery1, mystery2, mystery3, mystery4, mystery5]
 
+
+function stringToArray (number) {
+  return number.split('').map(Number);
+}
+console.log(stringToArray('3436'));
 
 // Add your functions below:
 function validateCred (array) {
@@ -63,11 +78,10 @@ function findInvalidCards (nested) {
   return invalidCards;
 }
 
-
 function idInvalidCardCompanies (nestedInvalid) {
   let companies = [];
   for (let i = 0; i < nestedInvalid.length; ++i) {
-    let invalidDigit = [i][0];
+    let invalidDigit = nestedInvalid[i][0];
     switch (invalidDigit) {
       case 3:
         if (companies.indexOf('Amex (American Express)') === -1) {
@@ -90,15 +104,35 @@ function idInvalidCardCompanies (nestedInvalid) {
         }
         break;
       default:
-        console.log("Company not found.");
         break;
     }
   }
+  if (companies.length == 0) {
+    return "Company not found.";
+  }
   return companies;
+}
+
+function formatCardNumber (cardNumber) {
+  if (typeof(cardNumber) == 'string') {
+    console.log("converting string to array...");
+    return stringToArray(cardNumber)
+  }
+  if (Array.isArray(cardNumber)) {
+    return cardNumber;
+  }
+  console.log('Invalid format.');
+  return false;
+}
+
+function testInvalidCard (card) {
+  return idInvalidCardCompanies([formatCardNumber(card)]);
 }
 
 console.log(idInvalidCardCompanies([invalid1])); // Should print['visa']
 console.log(idInvalidCardCompanies([invalid2])); // Should print ['mastercard']
 console.log(idInvalidCardCompanies(batch)); // Find out which companies have mailed out invalid cards
+console.log(testInvalidCard(visaInvalid1)); // ['Visa']
+console.log(testInvalidCard(invalid1)); // ['Visa']
 
 
